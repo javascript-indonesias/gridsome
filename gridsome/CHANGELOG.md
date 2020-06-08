@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.17](https://github.com/gridsome/gridsome/compare/gridsome@0.7.16...gridsome@0.7.17) (2020-06-07)
+
+
+### Performance Improvements
+
+* **build:** improve page-query output performance ([#1190](https://github.com/gridsome/gridsome/issues/1190)) ([2d81133](https://github.com/gridsome/gridsome/commit/2d811337bb61627ebb51e90404fcb24425bffd1d))
+* **g-image:** get dimensions from sharp metadata ([4f8ed20](https://github.com/gridsome/gridsome/commit/4f8ed20c30608fe624f3e3dad87174f600b50e1d))
+* **graphql:** improve path argument performance ([#1190](https://github.com/gridsome/gridsome/issues/1190)) ([8f15b4c](https://github.com/gridsome/gridsome/commit/8f15b4c01e650476c174b3e1c8b0f00ee66dd739))
+* **store:** disable adaptive indices for node index ([#1190](https://github.com/gridsome/gridsome/issues/1190)) ([52f90e4](https://github.com/gridsome/gridsome/commit/52f90e4196971411b1559e601b38abf798c63198))
+* **templates:** cache date while generating paths ([#1190](https://github.com/gridsome/gridsome/issues/1190)) ([c4f17a0](https://github.com/gridsome/gridsome/commit/c4f17a020491d1d7238e416a9911f543aac4b3e1))
+
+
+
+
+
+## [0.7.16](https://github.com/gridsome/gridsome/compare/gridsome@0.7.15...gridsome@0.7.16) (2020-06-03)
+
+
+### Bug Fixes
+
+* **graphql:** calculate pagination in dev mode ([#1198](https://github.com/gridsome/gridsome/issues/1198)) ([39e9381](https://github.com/gridsome/gridsome/commit/39e9381e764a634dd6af7e17fc085e66f7f1a674))
+
+
+
+
+
+## [0.7.15](https://github.com/gridsome/gridsome/compare/gridsome@0.7.14...gridsome@0.7.15) (2020-05-26)
+
+
+### Bug Fixes
+
+* **app:** add extra debugging output on hash mismatch failure ([#1150](https://github.com/gridsome/gridsome/issues/1150)) ([dc1a3fe](https://github.com/gridsome/gridsome/commit/dc1a3fe528f61c97b1dab0b34fb93076a33cdf08))
+* **app:** reduce generated code in routes.js ([#724](https://github.com/gridsome/gridsome/issues/724)) ([5e1d49a](https://github.com/gridsome/gridsome/commit/5e1d49ad1f0069bc4e7e73b05e2e3be72a31fbbe))
+* **config:** skip undefined plugins ([3dc6b0f](https://github.com/gridsome/gridsome/commit/3dc6b0f74ddf20aacb774056d7c2e66e05a72209))
+* **g-image:** rotate based on exif orientation ([#1178](https://github.com/gridsome/gridsome/issues/1178)) ([9e6e118](https://github.com/gridsome/gridsome/commit/9e6e1186ea3f06913a8843062dc86b0969b34d85))
+* **graphql:** add exists filter query operator ([4777d0c](https://github.com/gridsome/gridsome/commit/4777d0ccd9b04201d63bc17bda520b622df4b304))
+* **graphql:** allow GET request with query param ([#1127](https://github.com/gridsome/gridsome/issues/1127)) ([5a28064](https://github.com/gridsome/gridsome/commit/5a280646a368dd8b29ffa648405b6953451aa81a))
+* **graphql:** exclude undefined variables in page-query ([f753a47](https://github.com/gridsome/gridsome/commit/f753a47f247828538dbb803a2b28bddc230e194c))
+* **graphql:** use correct type for store.addReference() ([5b71d04](https://github.com/gridsome/gridsome/commit/5b71d04ddd23eaf0a5ba40fc56a93db77999cf87))
+
+
+
+
+
 ## [0.7.14](https://github.com/gridsome/gridsome/compare/gridsome@0.7.13...gridsome@0.7.14) (2020-04-18)
 
 
