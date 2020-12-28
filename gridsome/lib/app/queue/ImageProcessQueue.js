@@ -55,7 +55,7 @@ class ImageProcessQueue {
     const mimeType = mime.lookup(filePath)
     const defaultBlur = this.config.images.defaultBlur
 
-    if (!imageExtensions.includes(ext)) {
+    if (!imageExtensions.includes(ext.toLowerCase())) {
       throw new Error(
         `${ext} is not a supported image format. ` +
         `Supported extensions are ${imageExtensions.join(', ')}.`
@@ -155,6 +155,7 @@ class ImageProcessQueue {
       height: originalSize.height,
       noscriptHTML: '',
       imageHTML: '',
+      dataUri: undefined,
       cacheKey,
       name,
       ext,
@@ -164,11 +165,16 @@ class ImageProcessQueue {
 
     const classNames = (options.classNames || []).concat(['g-image'])
     const isSrcset = options.srcset !== false
-    const isLazy = options.immediate === undefined
+    const isLazy = options.immediate !== true
 
     if (isSrcset) {
       results.sizes = options.sizes || `(max-width: ${imageWidth}px) 100vw, ${imageWidth}px`
       results.srcset = results.sets.map(({ src, width }) => `${src} ${width}w`)
+    }
+
+    if (isLazy && isSrcset) {
+      classNames.push('g-image--lazy')
+
       results.dataUri = await createDataUri(
         pipeline,
         mimeType,
@@ -177,16 +183,11 @@ class ImageProcessQueue {
         defaultBlur,
         options
       )
-    }
-
-    if (isLazy && isSrcset) {
-      classNames.push('g-image--lazy')
 
       results.noscriptHTML = '' +
         `<noscript>` +
         `<img class="${classNames.join(' ')} g-image--loaded" ` +
-        `src="${results.src}" width="${results.size.width}"` +
-        (options.height ? ` height="${options.height}"` : '') +
+        `src="${results.src}" width="${results.size.width}" height="${results.size.height}"` +
         (options.alt ? ` alt="${options.alt}">` : '>') +
         `</noscript>`
 
@@ -196,8 +197,8 @@ class ImageProcessQueue {
     results.imageHTML = '' +
       `<img class="${classNames.join(' ')}" ` +
       `src="${isLazy ? results.dataUri || results.src : results.src}" ` +
-      `width="${results.size.width}"` +
-      (options.height ? ` height="${options.height}"` : '') +
+      `width="${results.size.width}" ` +
+      `height="${results.size.height}"` +
       (options.alt ? ` alt="${options.alt}"` : '') +
       (isLazy && isSrcset ? ` data-srcset="${results.srcset.join(', ')}"` : '') +
       (isLazy && isSrcset ? ` data-sizes="${results.sizes}"` : '') +
@@ -362,21 +363,5 @@ async function createBlurSvg (pipeline, mimeType, width, height, blur, resize = 
 
   return defs + image
 }
-
-// async function createTracedSvg (buffer, type, width, height) {
-//   // TODO: traced svg fallback
-//   if (!/(jpe?g|png|bmp)/.test(type)) {
-//     return svgDataUri(
-//       `<svg fill="none" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg"/>`
-//     )
-//   }
-
-//   return new Promise((resolve, reject) => {
-//     potrace.trace(buffer, (err, svg) => {
-//       if (err) reject(err)
-//       else resolve(svgDataUri(svg))
-//     })
-//   })
-// }
 
 module.exports = ImageProcessQueue

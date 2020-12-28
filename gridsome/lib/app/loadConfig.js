@@ -34,7 +34,9 @@ module.exports = (context, options = {}) => {
     split: false,
     loaderOptions: {
       sass: {
-        indentedSyntax: true
+        sassOptions: {
+          indentedSyntax: true
+        }
       },
       stylus: {
         preferPathResolver: 'webpack'
@@ -73,6 +75,7 @@ module.exports = (context, options = {}) => {
   config.pkg = options.pkg || resolvePkg(context)
   config.host = args.host || localConfig.host || '0.0.0.0'
   config.port = parseInt(args.port || localConfig.port, 10) || undefined
+  config.https = args.https
   config.plugins = normalizePlugins(context, plugins)
   config.redirects = normalizeRedirects(localConfig)
   config.transformers = resolveTransformers(config.pkg, localConfig)
@@ -112,7 +115,9 @@ module.exports = (context, options = {}) => {
   config.configureServer = localConfig.configureServer
 
   config.images = {
+    compress: true,
     defaultBlur: 40,
+    defaultQuality: 75,
     backgroundColor: null,
     ...localConfig.images
   }
@@ -164,7 +169,7 @@ module.exports = (context, options = {}) => {
 
   config.catchLinks = typeof localConfig.catchLinks === 'boolean' ? localConfig.catchLinks : true
 
-  return Object.freeze(config)
+  return config
 }
 
 function resolveEnv (context) {
@@ -400,7 +405,10 @@ function resolvePluginEntries (id, context) {
   } else if (id.startsWith('~/')) {
     dirName = path.join(context, id.replace(/^~\//, ''))
   } else {
-    dirName = path.dirname(require.resolve(id))
+    // TODO: Replace with require.resolve(id, { paths: [context] }) when support for node is >= v8.9.0
+    // https://nodejs.org/api/modules.html#modules_require_resolve_request_options
+    const resolvedPath = require('resolve-from')(context, id)
+    dirName = path.dirname(resolvedPath)
   }
 
   if (
@@ -479,3 +487,5 @@ function normalizeIconsConfig (config = {}) {
 
   return res
 }
+
+module.exports.builtInPlugins = builtInPlugins

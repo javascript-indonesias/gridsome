@@ -190,6 +190,7 @@ test('add custom attributes to markup', async () => {
   expect(result.noscriptHTML).toMatch(/test-1/)
   expect(result.noscriptHTML).toMatch(/test-2/)
   expect(result.noscriptHTML).toMatch(/height="100"/)
+  expect(result.noscriptHTML).toMatch(/height="100"/)
   expect(result.noscriptHTML).toMatch(/alt="Alternative text"/)
 })
 
@@ -380,6 +381,17 @@ test('get queue values', async () => {
   expect(queue.images.queue).toHaveLength(2)
 })
 
+test('ignore extension casing', async () => {
+  const filePath = path.resolve(context, 'assets/600x400-2.JPG')
+  const queue = new AssetsQueue({ context, config: baseconfig })
+
+  const result = await queue.add(filePath)
+
+  expect(queue.images.queue).toHaveLength(1)
+  expect(result.mimeType).toEqual('image/jpeg')
+  expect(result.ext).toEqual('.JPG')
+})
+
 test('disable lazy loading', async () => {
   const filePath = path.resolve(context, 'assets/1000x600.png')
   const queue = new AssetsQueue({ context, config: baseconfig })
@@ -389,6 +401,7 @@ test('disable lazy loading', async () => {
   expect(queue.images.queue).toHaveLength(2)
   expect(result.imageHTML).toMatchSnapshot()
   expect(result.noscriptHTML).toEqual('')
+  expect(result.dataUri).toBeUndefined()
 })
 
 test('skip srcset and dataUri', async () => {

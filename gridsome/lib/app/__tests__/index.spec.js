@@ -97,6 +97,24 @@ test('set custom favicon sizes', () => {
   })
 })
 
+test('set custom image processing options', () => {
+  const config = loadConfig(context, {
+    localConfig: {
+      images: {
+        compress: false,
+        defaultBlur: 5,
+        defaultQuality: 90,
+        backgroundColor: 'red'
+      }
+    }
+  })
+
+  expect(config.images.compress).toEqual(false)
+  expect(config.images.defaultBlur).toEqual(5)
+  expect(config.images.defaultQuality).toEqual(90)
+  expect(config.images.backgroundColor).toEqual('red')
+})
+
 test('setup templates config from string', () => {
   const config = loadConfig(context, {
     localConfig: {
@@ -296,37 +314,37 @@ test('config.chainWebpack', async () => {
   const app = await createApp(context, {
     localConfig: {
       chainWebpack (config) {
-        config.mode('test')
+        config.mode('none')
       }
     }
   }, BOOTSTRAP_CONFIG)
 
-  const config = await app.compiler.resolveWebpackConfig()
+  const config = app.compiler.getClientConfig()
 
   expect(config.entry.app).toBeDefined()
-  expect(config.mode).toEqual('test')
+  expect(config.mode).toEqual('none')
 })
 
 test('config.configureWebpack as object', async () => {
   const app = await createApp(context, {
     localConfig: {
       configureWebpack: {
-        mode: 'test'
+        mode: 'none'
       }
     }
   }, BOOTSTRAP_CONFIG)
 
-  const config = await app.compiler.resolveWebpackConfig()
+  const config = app.compiler.getClientConfig()
 
   expect(config.entry.app).toBeDefined()
-  expect(config.mode).toEqual('test')
+  expect(config.mode).toEqual('none')
 })
 
 test('create new config in config.configureWebpack', async () => {
   const app = await createApp(context, {
     localConfig: {
       configureWebpack: () => ({
-        mode: 'test',
+        mode: 'none',
         output: {
           publicPath: '/'
         }
@@ -334,10 +352,10 @@ test('create new config in config.configureWebpack', async () => {
     }
   }, BOOTSTRAP_CONFIG)
 
-  const config = await app.compiler.resolveWebpackConfig()
+  const config = app.compiler.getClientConfig()
 
   expect(config).toMatchObject({
-    mode: 'test',
+    mode: 'none',
     output: {
       publicPath: '/'
     }
@@ -348,15 +366,15 @@ test('modify config in config.configureWebpack', async () => {
   const app = await createApp(context, {
     localConfig: {
       configureWebpack: config => {
-        config.mode = 'test'
+        config.mode = 'none'
       }
     }
   }, BOOTSTRAP_CONFIG)
 
-  const config = await app.compiler.resolveWebpackConfig()
+  const config = app.compiler.getClientConfig()
 
   expect(config.entry.app).toBeDefined()
-  expect(config.mode).toEqual('test')
+  expect(config.mode).toEqual('none')
 })
 
 test('api.configureWebpack as object', async () => {
@@ -403,8 +421,15 @@ test('modify config in api.configureWebpack', async () => {
   expect(config.mode).toEqual('test')
 })
 
+test('should return the compiler', async () => {
+  const app = await createApp(context, BOOTSTRAP_CONFIG)
+  const compiler = app.compiler.getCompiler()
+
+  expect(compiler).not.toBe(null)
+})
+
 test('do not allow a custom publicPath', async () => {
-  const app = await createApp(context, {
+  const app = createApp(context, {
     localConfig: {
       pathPrefix: '/test',
       configureWebpack: {
@@ -415,7 +440,7 @@ test('do not allow a custom publicPath', async () => {
     }
   }, BOOTSTRAP_CONFIG)
 
-  await expect(app.compiler.resolveWebpackConfig()).rejects.toThrow('pathPrefix')
+  await expect(app).rejects.toThrow('pathPrefix')
 })
 
 async function createPlugin (context = '/') {
